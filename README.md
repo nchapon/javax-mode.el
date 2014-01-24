@@ -13,13 +13,14 @@ You need to have installed Java and Maven and setup two environments variables b
 * add `mvn` commnand  `PATH`
 
 Add this in your emacs configuration
-`;; Set up ENV variables to have the same as bash
+```cl
+;; Set up ENV variables to have the same as bash
 (when (file-exists-p "~/.bash_profile")
   (setenv "JAVA_HOME" (shell-command-to-string "source ~/.bash_profile; echo -n $JAVA_HOME"))
   (setenv "PATH" (shell-command-to-string "source ~/.bash_profile; echo -n $PATH")))
 
 (require 'javax-mode)
-`
+```
 
 ## Usage ##
 
