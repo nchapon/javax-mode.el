@@ -1,6 +1,6 @@
 # Javax Mode #
-Java mode extension.
-Need Maven.
+Java mode extension for Emacs.
+Extends _java-mode_ build source code and run tests with Maven.
 
 ## Installation ##
 
@@ -23,6 +23,19 @@ Add this in your emacs configuration
 ```
 
 ## Usage ##
++ `C-c C-t` Jump between test and code
++ `C-c C-s` Open source file
++ `C-c C-o` Organize imports, remove all unused imports
++ `C-c C-r` Run test.
+Use mvn command line to run a simgle test `mvn -Dtest=<testcase> test`
++ `C-c C-k` Compile source code from mvn command line `mvn -o compile`
++ `C-c C-b` Build project from mvn command line `mvn -f <pom-parent> clean install`
 
 
 ## TODO ##
++ Inline variables
++ Remove or display unused / variable
++ Display class method names
++ Sort Imports
++ Autocomplete Use eclim ?
++ ...
