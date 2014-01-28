@@ -50,9 +50,12 @@ You will find the source code at :
 
 ### Running tests ###
 
+Tests are written with [Ecukes](https://github.com/ecukes/ecukes).
+This library is used to write [Cucumber](http://cukes.info/)-like tests for Emacs.
+
 + Install [Cask](https://github.com/cask/cask)
 + Run cask to install all dependencies :
-    $ cd /path/to/javax-mode
-    $ cask
+    `$ cd /path/to/javax-mode`
+    `$ cask`
 + Run all the tests
-    $ cask exec ecukes --no-win
+    `$ cask exec ecukes --no-win`
