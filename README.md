@@ -4,7 +4,7 @@ Extends _java-mode_ build source code and run tests with Maven.
 
 ## Installation ##
 
-`git@github.com:nchapon/javax-mode.el `
+`git clone git@github.com:nchapon/javax-mode.el `
 
 ## Set up ##
 
@@ -39,3 +39,20 @@ Use mvn command line to run a simgle test `mvn -Dtest=<testcase> test`
 + Sort Imports
 + Autocomplete Use eclim ?
 + ...
+
+## Development ##
+
+### Source ###
+
+You will find the source code at :
+    https://github.com/nchapon/javax-mode.el
+
+
+### Running tests ###
+
++ Install [Cask](https://github.com/cask/cask)
++ Run cask to install all dependencies :
+    $ cd /path/to/javax-mode
+    $ cask
++ Run all the tests
+    $ cask exec ecukes --no-win
