@@ -200,6 +200,24 @@ point, prompts for a var"
         (push (substring found 1 (- (string-width found) 1)) imported-classes)))
     imported-classes))
 
+
+(defun insert-import (import)
+  "insert IMPORT in buffer"
+  (insert import)
+  (newline))
+
+(defun javax-sort-imports ()
+  "Sort imports"
+  (interactive)
+  (goto-char (point-min))
+  (let ((imports nil))
+     (while (re-search-forward "^import.*\\(\\.\\w+;\\)" nil t)
+       (let ((found (match-string-no-properties 0)))
+        (push found imports)
+        (delete-region (point-at-bol) (point-at-eol))))
+     (goto-line 3) ;;Imports should start at line 3
+     (mapcar 'insert-import (sort imports 'string<))))
+
 (defun javax-organize-imports ()
   "Organize imports"
   (interactive)
@@ -208,7 +226,9 @@ point, prompts for a var"
     (let ((imported-classes (javax-imported-classes)))
       (while imported-classes
         (javax-clear-unused-imports (first imported-classes))
-        (setq imported-classes (rest imported-classes))))))
+        (setq imported-classes (rest imported-classes))))
+    (javax-sort-imports)))
+
 
 
 (defvar javax-mode-map
