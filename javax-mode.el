@@ -201,7 +201,7 @@ point, prompts for a var"
     imported-classes))
 
 
-(defun insert-import (import)
+(defun javax--insert-import (import)
   "insert IMPORT in buffer"
   (insert import)
   (newline))
@@ -216,7 +216,7 @@ point, prompts for a var"
         (push found imports)
         (delete-region (point-at-bol) (point-at-eol))))
      (goto-line 3) ;;Imports should start at line 3
-     (mapcar 'insert-import (sort imports 'string<))))
+     (mapcar 'javax--insert-import (sort imports 'string<))))
 
 (defun javax-organize-imports ()
   "Organize imports"
