@@ -21,10 +21,11 @@
   :safe 'stringp)
 
 
-
-
-
-
+(defcustom javax-group-import-order '("java" "javax" "org" "com")
+  "Sort import pacakges order"
+  :group 'javax
+  :type 'list
+  :safe 'listp)
 
 (defun javax-mvn-build ()
   "Builds current maven project"
@@ -206,6 +207,35 @@ point, prompts for a var"
   (insert import)
   (newline))
 
+
+(defun javax-root-package-match-filter (rp imports)
+  (-sort 'string< (-filter (lambda (i)
+                             (and (string-match (format "^import %s\\..*;" rp) i) i)) imports)))
+
+(defun javax-other-packages-filter (imports)
+   (-sort 'string< (-remove (lambda (i)
+             (and (string-match "^import \\(java\\)\\|\\(javax\\)\\|\\(org\\)\\|\\(com\\)\\..*;" i) i)) imports)))
+
+
+(defun insert-group-of-imports (group imports)
+  "Insert GROUP of IMPORTS"
+  (interactive)
+  (let ((group-of-imports (javax-root-package-match-filter group imports)))
+    (while group-of-imports
+      (javax--insert-import (first group-of-imports))
+      (setq group-of-imports (rest group-of-imports))
+      (when (not group-of-imports)
+        (newline)))))
+
+(defun sort-imports (imports)
+  "DOCSTRING"
+  (interactive)
+  (dolist (group javax-group-import-order)
+    (insert-group-of-imports group imports))
+  (newline)
+  (dolist (o (javax-other-packages-filter imports))
+    (javax--insert-import o)))
+
 (defun javax-sort-imports ()
   "Sort imports"
   (interactive)
@@ -216,7 +246,7 @@ point, prompts for a var"
         (push found imports)
         (delete-region (point-at-bol) (point-at-eol))))
      (goto-line 3) ;;Imports should start at line 3
-     (mapcar 'javax--insert-import (sort imports 'string<))))
+     (sort-imports imports)))
 
 (defun javax-organize-imports ()
   "Organize imports"
