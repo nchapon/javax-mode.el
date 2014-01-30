@@ -75,32 +75,3 @@ Feature: Organize Imports
     """
     import static org.jx.StaticClass.*;
     """
-
-  Scenario: Should sort used imports
-    When I insert:
-    """
-    package org.jx;
-
-    import org.jx.ParentClass;
-    import org.jx.ClassA;
-    import org.jx.Annotation;
-    import org.jx.ClassB;
-
-    public class App extends ParentClass {
-
-        @Annotation
-        public void doSomething(){
-            ClassA.doSomething();
-            new ClassB();
-        }
-    }
-    """
-    And I go to end of buffer
-    And I press "C-c C-o"
-    Then I should see:
-    """
-    import org.jx.Annotation;
-    import org.jx.ClassA;
-    import org.jx.ClassB;
-    import org.jx.ParentClass;
-    """
