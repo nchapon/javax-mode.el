@@ -187,10 +187,9 @@ point, prompts for a var"
   "Clear unused imported classes."
   (goto-char (point-min))
   (javax-search-symbol classname)
-  (let ((kill-whole-line t))
-    (when (not (javax-search-symbol classname))
-      (beginning-of-line)
-      (kill-line))))
+  (when (not (javax-search-symbol classname))
+    (beginning-of-line)
+    (kill-whole-line)))
 
 (defun javax-imported-classes ()
   "List all imported classes"
@@ -216,7 +215,6 @@ point, prompts for a var"
    (-sort 'string< (-remove (lambda (i)
              (and (string-match "^import \\(java\\)\\|\\(javax\\)\\|\\(org\\)\\|\\(com\\)\\..*;" i) i)) imports)))
 
-
 (defun insert-group-of-imports (group imports)
   "Insert GROUP of IMPORTS"
   (interactive)
@@ -232,21 +230,30 @@ point, prompts for a var"
   (interactive)
   (dolist (group javax-group-import-order)
     (insert-group-of-imports group imports))
-  (newline)
   (dolist (o (javax-other-packages-filter imports))
     (javax--insert-import o)))
+
+(defun newline-if-necessary ()
+  "Insert only one newline"
+  (interactive)
+  (delete-blank-lines) ;;delete all unecessary balnk lines
+  (beginning-of-line)
+  (when (not (looking-at "[ \t]*$"))
+    (newline)))
+
 
 (defun javax-sort-imports ()
   "Sort imports"
   (interactive)
   (goto-char (point-min))
   (let ((imports nil))
-     (while (re-search-forward "^import.*\\(\\.\\w+;\\)" nil t)
-       (let ((found (match-string-no-properties 0)))
+    (while (re-search-forward "^import.*\\(\\.\\w+;\\)" nil t)
+      (let ((found (match-string-no-properties 0)))
         (push found imports)
-        (delete-region (point-at-bol) (point-at-eol))))
-     (goto-line 3) ;;Imports should start at line 3
-     (sort-imports imports)))
+        (kill-whole-line)))
+    (goto-line 3) ;; Imports should start at line 3
+    (sort-imports imports)
+    (newline-if-necessary)))
 
 (defun javax-organize-imports ()
   "Organize imports"
@@ -258,7 +265,6 @@ point, prompts for a var"
         (javax-clear-unused-imports (first imported-classes))
         (setq imported-classes (rest imported-classes))))
     (javax-sort-imports)))
-
 
 
 (defvar javax-mode-map

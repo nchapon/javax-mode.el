@@ -1,11 +1,15 @@
 package org.jx.system;
 
-import static com.allianz.bank.*;
+
 
 import java.util.List;
 import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import org.slf4j.Logger;
+
+
+
+
 
 public class Calculator {
 
