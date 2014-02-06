@@ -201,54 +201,44 @@ point, prompts for a var"
     imported-classes))
 
 
-(defun javax--insert-import (import)
-  "insert IMPORT in buffer"
-  (insert import)
-  (newline))
+(defun javax-insert-imports (imports)
+  "insert IMPORTS in buffer"
+  (dolist (i (-sort 'string< imports))
+    (insert i)
+    (newline))
+  (when imports
+    (newline)))
 
+(defun javax-filter-imports-by-group (imports group)
+  "Sort IMPORTS by GROUP"
+  (-filter (lambda (i)
+             (and (string-match (format "^import %s\\..*;" group) i) i)) imports))
 
-(defun javax-root-package-match-filter (rp imports)
-  (-sort 'string< (-filter (lambda (i)
-                             (and (string-match (format "^import %s\\..*;" rp) i) i)) imports)))
-
-(defun javax-other-packages-filter (imports)
-   (-sort 'string< (-remove (lambda (i)
-             (and (string-match "^import \\(java\\)\\|\\(javax\\)\\|\\(org\\)\\|\\(com\\)\\..*;" i) i)) imports)))
-
-(defun insert-group-of-imports (group imports)
-  "Insert GROUP of IMPORTS"
-  (interactive)
-  (let ((group-of-imports (javax-root-package-match-filter group imports)))
-    (while group-of-imports
-      (javax--insert-import (first group-of-imports))
-      (setq group-of-imports (rest group-of-imports))
-      (when (not group-of-imports)
-        (newline)))))
-
-(defun javax-sort-static-imports (imports)
+(defun javax-filter-static-imports (imports)
   "Sort static IMPORTS"
-   (-sort 'string< (-filter (lambda (i)
-             (and (string-match "^import static .*;$" i) i)) imports)))
+  (-filter (lambda (i)
+             (and (string-match "^import static .*;$" i) i)) imports))
+
+(defun javax-filter-other-imports (imports)
+  (-remove (lambda (i)
+             (and (string-match "^import \\(java\\)\\|\\(javax\\)\\|\\(org\\)\\|\\(com\\)\\..*;" i) i)) imports))
+
 
 (defun newline-if-necessary ()
   "Insert only one newline"
   (interactive)
-  (delete-blank-lines) ;;delete all unecessary balnk lines
+  (delete-blank-lines) ;;delete all unecessary blank lines
   (beginning-of-line)
   (when (not (looking-at "[ \t]*$"))
     (newline)))
 
-(defun sort-imports (imports)
-  "Sort IMPORTS"
-  (interactive)
-  (-when-let (static-imports (javax-sort-static-imports imports))
-    (dolist (i static-imports)
-      (javax--insert-import i))
-    (newline))
+(defun javax-sort-and-insert-imports (imports)
+  "Sort and insert IMPORTS"
+  (goto-line 3) ;; Imports should start at line 3
+  (javax-insert-imports (javax-filter-static-imports imports))
   (dolist (group javax-group-import-order)
-    (insert-group-of-imports group imports))
-  (dolist (i (javax-other-packages-filter imports))
-    (javax--insert-import i))
+    (javax-insert-imports (javax-filter-imports-by-group imports group)))
+  (javax-insert-imports (javax-filter-other-imports imports))
   (newline-if-necessary))
 
 (defun javax-sort-imports ()
@@ -256,12 +246,13 @@ point, prompts for a var"
   (interactive)
   (goto-char (point-min))
   (let ((imports nil))
+    ;; First remove all imports in buffer
     (while (re-search-forward "^import .*;$" nil t)
       (let ((found (match-string-no-properties 0)))
         (push found imports)
         (kill-whole-line)))
-    (goto-line 3) ;; Imports should start at line 3
-    (sort-imports imports)))
+    ;; Second sort and insert imports
+    (javax-sort-and-insert-imports imports)))
 
 (defun javax-organize-imports ()
   "Organize imports"
