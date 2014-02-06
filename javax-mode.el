@@ -225,13 +225,10 @@ point, prompts for a var"
       (when (not group-of-imports)
         (newline)))))
 
-(defun sort-imports (imports)
-  "DOCSTRING"
-  (interactive)
-  (dolist (group javax-group-import-order)
-    (insert-group-of-imports group imports))
-  (dolist (o (javax-other-packages-filter imports))
-    (javax--insert-import o)))
+(defun javax-sort-static-imports (imports)
+  "Sort static IMPORTS"
+   (-sort 'string< (-filter (lambda (i)
+             (and (string-match "^import static .*;$" i) i)) imports)))
 
 (defun newline-if-necessary ()
   "Insert only one newline"
@@ -241,19 +238,30 @@ point, prompts for a var"
   (when (not (looking-at "[ \t]*$"))
     (newline)))
 
+(defun sort-imports (imports)
+  "Sort IMPORTS"
+  (interactive)
+  (-when-let (static-imports (javax-sort-static-imports imports))
+    (dolist (i static-imports)
+      (javax--insert-import i))
+    (newline))
+  (dolist (group javax-group-import-order)
+    (insert-group-of-imports group imports))
+  (dolist (i (javax-other-packages-filter imports))
+    (javax--insert-import i))
+  (newline-if-necessary))
 
 (defun javax-sort-imports ()
   "Sort imports"
   (interactive)
   (goto-char (point-min))
   (let ((imports nil))
-    (while (re-search-forward "^import.*\\(\\.\\w+;\\)" nil t)
+    (while (re-search-forward "^import .*;$" nil t)
       (let ((found (match-string-no-properties 0)))
         (push found imports)
         (kill-whole-line)))
     (goto-line 3) ;; Imports should start at line 3
-    (sort-imports imports)
-    (newline-if-necessary)))
+    (sort-imports imports)))
 
 (defun javax-organize-imports ()
   "Organize imports"
