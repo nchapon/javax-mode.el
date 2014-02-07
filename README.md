@@ -36,7 +36,6 @@ Use mvn command line to run a simgle test `mvn -Dtest=<testcase> test`
 + Inline variables
 + Remove or display unused / variable
 + Display class method names
-+ Sort Imports
 + Autocomplete Use eclim ?
 + ...
 
