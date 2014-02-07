@@ -224,9 +224,8 @@ point, prompts for a var"
              (and (string-match "^import \\(java\\)\\|\\(javax\\)\\|\\(org\\)\\|\\(com\\)\\..*;" i) i)) imports))
 
 
-(defun newline-if-necessary ()
+(defun javax-newline-if-necessary ()
   "Insert only one newline"
-  (interactive)
   (delete-blank-lines) ;;delete all unecessary blank lines
   (beginning-of-line)
   (when (not (looking-at "[ \t]*$"))
@@ -239,7 +238,7 @@ point, prompts for a var"
   (dolist (group javax-group-import-order)
     (javax-insert-imports (javax-filter-imports-by-group imports group)))
   (javax-insert-imports (javax-filter-other-imports imports))
-  (newline-if-necessary))
+  (javax-newline-if-necessary))
 
 (defun javax-sort-imports ()
   "Sort imports"
