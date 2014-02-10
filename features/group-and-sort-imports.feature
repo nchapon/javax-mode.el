@@ -53,6 +53,7 @@ Feature: Group and order imports when organize Imports
     """
     package org.jx;
 
+    import static fr.jx.ClassC.*;
     import fr.jx.ParentClass;
     import org.jx.ClassA;
     import java.lang.Annotation;
@@ -72,6 +73,8 @@ Feature: Group and order imports when organize Imports
     Then I should see:
     """
     package org.jx;
+
+    import static fr.jx.ClassC.*;
 
     import java.lang.Annotation;
 

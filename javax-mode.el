@@ -221,7 +221,7 @@ point, prompts for a var"
 
 (defun javax-filter-other-imports (imports)
   (-remove (lambda (i)
-             (and (string-match "^import \\(java\\)\\|\\(javax\\)\\|\\(org\\)\\|\\(com\\)\\..*;" i) i)) imports))
+             (and (string-match "^import \\(static\\)\\|\\(java\\)\\|\\(javax\\)\\|\\(org\\)\\|\\(com\\)\\..*;" i) i)) imports))
 
 
 (defun javax-newline-if-necessary ()
