@@ -31,12 +31,15 @@ Use mvn command line to run a simgle test `mvn -Dtest=<testcase> test`
 + `C-c C-k` Compile source code from mvn command line `mvn -o compile`
 + `C-c C-b` Build project from mvn command line `mvn -f <pom-parent> clean install`
 
+## Flycheck
+
+TODO
 
 ## TODO ##
 + Inline variables
 + Remove or display unused / variable
 + Display class method names
-+ Autocomplete Use eclim ?
++ Check syntax with Flycheck (in progress)
 + ...
 
 ## Development ##

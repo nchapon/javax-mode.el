@@ -1,3 +1,5 @@
 /.cask
 /.ecukes-failing-scenarios
 /java-templates/jx/target
+/bin/ecj-4.3.1.jar
+/java-templates/jx/.javax-project.el
