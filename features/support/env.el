@@ -12,6 +12,8 @@
 (defvar javax-projects-path
   (f-expand "java-projects" javax-mode-features-path))
 
+(defvar cask-current-project nil)
+
 (add-to-list 'load-path javax-mode-root-path)
 
 

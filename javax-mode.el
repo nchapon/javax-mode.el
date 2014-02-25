@@ -1,7 +1,7 @@
 ;;; javax-mode.el --- Minor mode to improve java experience in Emacs
 (require 'cc-mode)
 (require 'compile)
-
+(require 'javax-flycheck)
 
 
 (defcustom javax-mvn-build-command "mvn -f %spom.xml clean install"

@@ -15,10 +15,12 @@
          (when (file-exists-p dir-name)
            (delete-directory dir-name t))
 
-         ;; copy jx content from java-templates
+         ;; copy project content from java-projects
          (copy-directory
-          (expand-file-name "simple-project" javax-projects-path)
-          dir-name)))
+          (expand-file-name project-name javax-projects-path)
+          dir-name)
+         ;; set javax-current-project
+         (setq javax-current-project (expand-file-name dir-name default-directory))))
 
 (Given "^I have a java-file \"\\([^\"]+\\)\"$"
      (lambda (file-name)
@@ -30,3 +32,11 @@
 (Then "^the file should be named \"\\([^\"]+\\)\"$"
       (lambda (file-name-postfix)
         (assert (s-ends-with? file-name-postfix (buffer-file-name)) nil "Expected %S to end with %S" (buffer-file-name) file-name-postfix)))
+
+
+(Then "^there should exist a file called \"\\([^\"]+\\)\" with this content:$"
+  (lambda (filename content)
+    (let ((filepath (f-expand filename javax-current-project)))
+      (with-temp-buffer
+        (insert-file-contents filepath)
+        (Then "I should see:" content)))))
