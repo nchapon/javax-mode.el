@@ -4,7 +4,7 @@
 (require 'javax-flycheck)
 
 
-(defcustom javax-mvn-build-command "mvn -f %spom.xml clean install"
+(defcustom jx/mvn-build-command "mvn -f %spom.xml clean install"
   "Format string to run mvn build command. his format string
    should use '%s' to substitute the project maven root
    directory."
@@ -12,7 +12,7 @@
   :type 'string
   :safe 'stringp)
 
-(defcustom javax-mvn-compile-command "cd %s; mvn -o compile"
+(defcustom jx/mvn-compile-command "cd %s; mvn -o compile"
   "Format string to run mvn compile command. This format string
    should use '%s' to substitute the project maven root
    directory."
@@ -21,13 +21,13 @@
   :safe 'stringp)
 
 
-(defcustom javax-group-import-order '("java" "javax" "org" "com")
+(defcustom jx/group-import-order '("java" "javax" "org" "com")
   "Sort import pacakges order"
   :group 'javax
   :type 'list
   :safe 'listp)
 
-(defun javax-mvn-build ()
+(defun jx/mvn-build ()
   "Builds current maven project"
   (interactive)
   (let* ((dir (file-name-as-directory (expand-file-name default-directory)))
@@ -38,18 +38,18 @@
     (if (not found)
         (message "No pom.xml found")
       (compile (read-from-minibuffer "Command: "
-                                     (format javax-mvn-build-command dir) nil nil 'compile-history)))))
+                                     (format jx/mvn-build-command dir) nil nil 'compile-history)))))
 
-(defun javax-mvn-compile ()
+(defun jx/mvn-compile ()
   "Runs mvn test from a buffer file"
   (interactive)
   (compile
         (format
-         javax-mvn-compile-command
+         jx/mvn-compile-command
          (locate-dominating-file (buffer-file-name) "pom.xml")
          (car(split-string (buffer-name) "\\.")))))
 
-(defun javax-mvn-test ()
+(defun jx/mvn-test ()
   "Runs mvn test from a buffer file"
   (interactive)
   (compile
@@ -63,14 +63,14 @@
              '("^.*?\\(/.*\\):\\[\\([0-9]*\\),\\([0-9]*\\)\\]" 1 2 3))
 
 
-(defun javax-path-for (package)
+(defun jx/path-for (package)
   "Convert PACKAGE name to real path."
   (interactive)
   (let ((segments (split-string package "\\." t)))
     (mapconcat 'identity segments "/")))
 
 
-(defun javax-find-package ()
+(defun jx/find-package ()
   "Find current buffer package"
   (interactive)
   (save-excursion
@@ -79,7 +79,7 @@
           (match-string-no-properties 2)))
 
 
-(defun javax-find-symbol-package (symbol)
+(defun jx/find-symbol-package (symbol)
   "Find the package for the current SYMBOL"
   (interactive)
   (save-excursion
@@ -87,9 +87,9 @@
     (let ((case-fold-search t))
       (if (re-search-forward (format "\\(^import \\(.*\\)%s;$\\)" symbol) nil t)
         (match-string-no-properties 2)
-      (javax-find-package)))))
+      (jx/find-package)))))
 
-(defun javax-electric-brace ()
+(defun jx/electric-brace ()
   "Insert automatically close brace after 2 new lines."
   (interactive)
   (insert " {")
@@ -103,95 +103,95 @@
   (previous-line)
   (indent-for-tab-command))
 
-(defun javax-symbol-at-point ()
+(defun jx/symbol-at-point ()
   "Read symbol at point"
   (interactive)
   (let ((str (thing-at-point 'symbol)))
     str))
 
-(defun javax-read-symbol-name (prompt callback &optional query)
+(defun jx/read-symbol-name (prompt callback &optional query)
   "Read symbol name."
-  (let ((symbol-name (javax-symbol-at-point)))
+  (let ((symbol-name (jx/symbol-at-point)))
     (cond
      ((not (or current-prefix-arg query (not symbol-name)))
       (funcall callback symbol-name))
      (t (funcall callback (read-from-minibuffer prompt))))))
 
-(defun javax-project-dir ()
+(defun jx/project-dir ()
   "Returns java project dir for current buffer"
   (locate-dominating-file (buffer-file-name) ".git"))
 
-(defun javax-find-file (symbol)
+(defun jx/find-file (symbol)
   "Find java file from project root"
-  (let ((package (javax-find-symbol-package symbol)))
+  (let ((package (jx/find-symbol-package symbol)))
     (shell-command-to-string
     (format "find %s -iname %s.java -print0 | grep -FzZ %s"
-            (javax-project-dir) symbol (javax-path-for package)))))
+            (jx/project-dir) symbol (jx/path-for package)))))
 
-(defun javax-src-handler (symbol)
+(defun jx/src-handler (symbol)
   "Create a handler to lookup java source code for SYMBOL"
-  (let ((results (javax-find-file symbol)))
+  (let ((results (jx/find-file symbol)))
     (cond
      ((string= "" results) (message "No source file for symbol %s" symbol))
      (t (find-file (first (split-string results)))))))
 
-(defun javax-src (query)
+(defun jx/src (query)
   "Open java source file for the given QUERY.
 Defaults to the symbol at point. With prefix arg or no symbol under
 point, prompts for a var"
   (interactive "P")
-  (javax-read-symbol-name "Class :" 'javax-src-handler query))
+  (jx/read-symbol-name "Class :" 'jx/src-handler query))
 
-(defun javax-in-tests-p ()
+(defun jx/in-tests-p ()
   "Check whether the current file is a test file."
   (string-match-p "src/test/java" (buffer-file-name)))
 
-(defun javax-test-for (package)
+(defun jx/test-for (package)
   "Returns the path of the the test file for a given PACKAGE."
   (format
    "%ssrc/test/java/%s/%sTest.java"
    (locate-dominating-file (buffer-file-name) "pom.xml")
-   (javax-path-for package)
+   (jx/path-for package)
    (car (split-string (buffer-name) "\\.java"))))
 
-(defun javax-implementation-for (package)
+(defun jx/implementation-for (package)
   "Returns the path of the the implementaion file for a given PACKAGE."
   (format
    "%ssrc/main/java/%s/%s.java"
    (locate-dominating-file (buffer-file-name) "pom.xml")
-   (javax-path-for package)
+   (jx/path-for package)
    (car (split-string (buffer-name) "Test\\.java"))))
 
-(defun javax-jump-to-test ()
+(defun jx/jump-to-test ()
   "Jump from implementation file to test."
   (interactive)
-    (find-file (javax-test-for (javax-find-package))))
+    (find-file (jx/test-for (jx/find-package))))
 
-(defun javax-jump-to-implementation ()
+(defun jx/jump-to-implementation ()
   "Jump from test file to implementation."
-  (find-file (javax-implementation-for (javax-find-package))))
+  (find-file (jx/implementation-for (jx/find-package))))
 
-(defun javax-jump-between-tests-and-code ()
+(defun jx/jump-between-tests-and-code ()
   "Jump between tests and code"
   (interactive)
-  (if (javax-in-tests-p)
-       (javax-jump-to-implementation)
-    (javax-jump-to-test)))
+  (if (jx/in-tests-p)
+       (jx/jump-to-implementation)
+    (jx/jump-to-test)))
 
-(defun javax-search-symbol (symbol)
+(defun jx/search-symbol (symbol)
   "Search symbol, should be case sensitive."
   (let ((case-fold-search nil))
     (re-search-forward (format "\\b%s\\b" symbol) nil t)))
 
-(defun javax-clear-unused-imports (classname)
+(defun jx/clear-unused-imports (classname)
   "Clear unused imported classes."
   (goto-char (point-min))
-  (javax-search-symbol classname)
-  (when (not (javax-search-symbol classname))
+  (jx/search-symbol classname)
+  (when (not (jx/search-symbol classname))
     (beginning-of-line)
     (kill-whole-line)))
 
-(defun javax-imported-classes ()
+(defun jx/imported-classes ()
   "List all imported classes"
   (interactive)
   (let ((imported-classes nil))
@@ -201,7 +201,7 @@ point, prompts for a var"
     imported-classes))
 
 
-(defun javax-insert-imports (imports)
+(defun jx/insert-imports (imports)
   "insert IMPORTS in buffer"
   (dolist (i (-sort 'string< imports))
     (insert i)
@@ -209,38 +209,38 @@ point, prompts for a var"
   (when imports
     (newline)))
 
-(defun javax-filter-imports-by-group (imports group)
+(defun jx/filter-imports-by-group (imports group)
   "Sort IMPORTS by GROUP"
   (-filter (lambda (i)
              (and (string-match (format "^import %s\\..*;" group) i) i)) imports))
 
-(defun javax-filter-static-imports (imports)
+(defun jx/filter-static-imports (imports)
   "Sort static IMPORTS"
   (-filter (lambda (i)
              (and (string-match "^import static .*;$" i) i)) imports))
 
-(defun javax-filter-other-imports (imports)
+(defun jx/filter-other-imports (imports)
   (-remove (lambda (i)
              (and (string-match "^import \\(static\\)\\|\\(java\\)\\|\\(javax\\)\\|\\(org\\)\\|\\(com\\)\\..*;" i) i)) imports))
 
 
-(defun javax-newline-if-necessary ()
+(defun jx/newline-if-necessary ()
   "Insert only one newline"
   (delete-blank-lines) ;;delete all unecessary blank lines
   (beginning-of-line)
   (when (not (looking-at "[ \t]*$"))
     (newline)))
 
-(defun javax-sort-and-insert-imports (imports)
+(defun jx/sort-and-insert-imports (imports)
   "Sort and insert IMPORTS"
   (goto-line 3) ;; Imports should start at line 3
-  (javax-insert-imports (javax-filter-static-imports imports))
-  (dolist (group javax-group-import-order)
-    (javax-insert-imports (javax-filter-imports-by-group imports group)))
-  (javax-insert-imports (javax-filter-other-imports imports))
-  (javax-newline-if-necessary))
+  (jx/insert-imports (jx/filter-static-imports imports))
+  (dolist (group jx/group-import-order)
+    (jx/insert-imports (jx/filter-imports-by-group imports group)))
+  (jx/insert-imports (jx/filter-other-imports imports))
+  (jx/newline-if-necessary))
 
-(defun javax-sort-imports ()
+(defun jx/sort-imports ()
   "Sort imports"
   (interactive)
   (goto-char (point-min))
@@ -251,29 +251,29 @@ point, prompts for a var"
         (push found imports)
         (kill-whole-line)))
     ;; Second sort and insert imports
-    (javax-sort-and-insert-imports imports)))
+    (jx/sort-and-insert-imports imports)))
 
-(defun javax-organize-imports ()
+(defun jx/organize-imports ()
   "Organize imports"
   (interactive)
   (save-excursion
     (goto-char (point-min))
-    (let ((imported-classes (javax-imported-classes)))
+    (let ((imported-classes (jx/imported-classes)))
       (while imported-classes
-        (javax-clear-unused-imports (first imported-classes))
+        (jx/clear-unused-imports (first imported-classes))
         (setq imported-classes (rest imported-classes))))
-    (javax-sort-imports)))
+    (jx/sort-imports)))
 
 
 (defvar javax-mode-map
   (let ((map (make-sparse-keymap)))
-    (define-key java-mode-map (kbd "{") 'javax-electric-brace)
-    (define-key java-mode-map (kbd "C-c C-b") 'javax-mvn-build)
-    (define-key java-mode-map (kbd "C-c C-k") 'javax-mvn-compile)
-    (define-key java-mode-map (kbd "C-c C-r") 'javax-mvn-test)
-    (define-key java-mode-map (kbd "C-c C-t") 'javax-jump-between-tests-and-code)
-    (define-key java-mode-map (kbd "C-c C-s") 'javax-src)
-    (define-key java-mode-map (kbd "C-c C-o") 'javax-organize-imports)
+    (define-key java-mode-map (kbd "{") 'jx/electric-brace)
+    (define-key java-mode-map (kbd "C-c C-b") 'jx/mvn-build)
+    (define-key java-mode-map (kbd "C-c C-k") 'jx/mvn-compile)
+    (define-key java-mode-map (kbd "C-c C-r") 'jx/mvn-test)
+    (define-key java-mode-map (kbd "C-c C-t") 'jx/jump-between-tests-and-code)
+    (define-key java-mode-map (kbd "C-c C-s") 'jx/src)
+    (define-key java-mode-map (kbd "C-c C-o") 'jx/organize-imports)
     map)
   "Keymap for Javax mode.")
 
