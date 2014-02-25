@@ -1,7 +1,7 @@
 Feature: Jump between source code and test
 
   Background:
-    Given I have a maven project "jx" in "tmp"
+    Given I have a maven project "simple-project" in "tmp"
 
   Scenario: Jump to test case from source code
     When I open file "tmp/src/main/java/org/jx/App.java"

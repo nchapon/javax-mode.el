@@ -1,7 +1,7 @@
 Feature: Group and order imports when organize Imports
 
   Background:
-    Given I have a maven project "jx" in "tmp"
+    Given I have a maven project "simple-project" in "tmp"
 
 
   Scenario: Should group and sort imports when I have only one group

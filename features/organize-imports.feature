@@ -1,7 +1,7 @@
 Feature: Organize Imports
 
   Background:
-    Given I have a maven project "jx" in "tmp"
+    Given I have a maven project "simple-project" in "tmp"
     And I have a java-file "tmp/src/main/java/org/jx/App.java"
     And I open file "tmp/src/main/java/org/jx/App.java"
     And I clear the buffer
