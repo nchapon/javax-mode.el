@@ -7,6 +7,15 @@
 (defvar jx/project-config-filename ".javax-project.el"
   "Project configuration file")
 
+;; Default config file
+(setq jx/default-config
+  '((:source . "1.7")
+    (:target . "1.7")
+    (:options . "-warn:+over-ann,uselessTypeCheck -proceedOnError -maxProblems 100")
+    (:dependencies . ())
+    (:lib-paths . ("target/classes" "target/test-classes"))))
+
+
 (defun jx/get-mvn-metadata (dependency n)
   "Get maven metadata"
   (nth n (split-string dependency ":")))
@@ -39,23 +48,23 @@
           (jx/get-mvn-version dep)
           (jx/get-mvn-artifact-name dep)))
 
-(defun jx/classpath (deps)
-  "Build classpath from DEPS"
+(defun jx/build-classpath (dependencies)
+  "Build classpath from maven DEPENDENCIES"
   (let ((cp '("rt.jar")))
-    (dolist (dep deps)
+    (dolist (dep dependencies)
       (push (jx/get-mvn-depency-path dep) cp))
     cp))
 
-(defun jx/current-project-dir ()
-  "Returns Java Project Directory"
+(defun jx/mvn-current-project-dir ()
+  "Returns current maven project directory"
   (interactive)
   (locate-dominating-file (buffer-file-name) "pom.xml"))
 
-
 (defun jx/expand-project-config-file ()
   "Expand project file name with project directory"
-  (message "JPD=%s" (jx/current-project-dir))
-  (expand-file-name jx/project-config-filename (jx/current-project-dir)))
+  (expand-file-name
+   jx/project-config-filename
+   (jx/mvn-current-project-dir)))
 
 (defun jx/read-config-file ()
   "Read config file"
@@ -65,36 +74,15 @@
       (set-buffer buf)
       (read (buffer-string)))))
 
-(defun jx/init-classpath ()
-  (jx/classpath
+(defun jx/classpath ()
+  (jx/build-classpath
    (cdr (assoc :dependencies (jx/read-config-file)))))
 
 (defun jx/get-classpath ()
-  "Get project classpath."
+  "Get full classpath, all entries are separated by Unix default
+separator ':'"
   (interactive)
-  (mapconcat 'identity (jx/init-classpath) ":"))
-
-
-(when (featurep 'flycheck-autoloads)
-  (flycheck-define-checker java-syntax
-    "Check syntax of java code using ecj compiler"
-    :command   ("java"
-                "-Xms128m"
-                "-Xmx128m"
-                "-jar" (eval jx/ecj-path)
-                "-d" "none"
-                "-1.7"
-                "-Xemacs"
-                "-cp" (eval (jx/get-classpath))
-                source)
-    :error-patterns
-    ((warning line-start (file-name) ":" line
-              ": warning:" (message) line-end)
-     (error line-start (file-name) ":" line
-            ": error:" (message) line-end))
-    :modes java-mode)
-
-  (add-to-list 'flycheck-checkers 'java-syntax))
+  (mapconcat 'identity (jx/classpath) ":"))
 
 
 (defvar jx/mvn-dependency-pattern "\\[INFO\\] .* \\([0-9A-Za-z.-]+\\):\\([0-9A-Za-z.-]+\\):\\(jar\\):\\([0-9A-Za-z.-]+\\):\\(test\\|compile\\)$" "MATCH Dependencies regexp")
@@ -137,14 +125,6 @@
       (save-buffer)
       (kill-buffer))))
 
-(setq jx/default-config
-  '((:source . "1.7")
-    (:target . "1.7")
-    (:options . "-warn:+over-ann,uselessTypeCheck -proceedOnError -maxProblems 100")
-    (:dependencies . ())
-    (:lib-paths . ("target/classes" "target/test-classes"))))
-
-
 (defun jx/update-dependencies (dependencies)
   "Update project dependencies"
   (let ((deps (cdr (assoc :dependencies jx/default-config))))
@@ -157,6 +137,28 @@
   (jx/dump-vars-to-file jx/default-config
                      (jx/expand-project-config-file)))
 
-(provide 'javax-flycheck)
+;;; Define Flycheck Checker
+(when (featurep 'flycheck-autoloads)
+  (flycheck-define-checker java-syntax
+    "Check syntax of java code using ecj compiler"
+    :command   ("java"
+                "-Xms128m"
+                "-Xmx128m"
+                "-jar" (eval jx/ecj-path)
+                "-d" "none"
+                "-1.7"
+                "-Xemacs"
+                "-cp" (eval (jx/get-classpath))
+                source)
+    :error-patterns
+    ((warning line-start (file-name) ":" line
+              ": warning:" (message) line-end)
+     (error line-start (file-name) ":" line
+            ": error:" (message) line-end))
+    :modes java-mode)
 
+  (add-to-list 'flycheck-checkers 'java-syntax))
+
+
+(provide 'javax-flycheck)
 ;;; javax-flycheck ends here
