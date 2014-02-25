@@ -1,5 +1,0 @@
-((:source . "1.7")
- (:target . "1.7")
- (:options . "-warn:+over-ann,uselessTypeCheck -proceedOnError -maxProblems 100")
- (:dependencies "ch.qos.logback:logback-core:jar:1.1.0:compile" "ch.qos.logback:logback-classic:jar:1.1.0:compile" "org.slf4j:slf4j-api:jar:1.7.5:compile" "org.assertj:assertj-core:jar:1.5.0:test" "org.hamcrest:hamcrest-core:jar:1.3:test" "junit:junit:jar:4.11:test")
- (:lib-paths "target/classes" "target/test-classes"))

@@ -17,7 +17,7 @@
 
          ;; copy jx content from java-templates
          (copy-directory
-          (expand-file-name "simple-project" (expand-file-name "java-projects"))
+          (expand-file-name "simple-project" javax-projects-path)
           dir-name)))
 
 (Given "^I have a java-file \"\\([^\"]+\\)\"$"
