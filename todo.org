@@ -2,12 +2,12 @@
 
 
 ** Flycheck Java checker
-*** INPROGRESS Try to add ecukes test with flycheck
-*** TODO Add classes and test-classes in ECJ Classpath
-*** TODO Check javax project config file exists befaore running flycheck
+*** CANCELED Try to add ecukes test with flycheck
+*** DONE Add classes and test-classes in ECJ Classpath
+*** TODO Check javax project config file exists before running flycheck
 *** TODO Add hook after save pom.xml to update project config
-*** TODO User can customize MVN_REPO path
-*** TODO User can customize ECJ path
+*** DONE User can customize MVN_REPO path
+*** DONE User can customize ECJ path
 
 
 ** Editing source code

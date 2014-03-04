@@ -1,8 +1,16 @@
 (require 'flycheck)
 
-(defvar jx/mvn-repo-path "/home/nchapon/opt/m2_repo")
+(defcustom jx/mvn-repo-path "~/.m2"
+  "The path to the local Maven repository"
+  :group 'javax
+  :type 'string
+  :safe 'stringp)
 
-(defvar jx/ecj-path "/home/nchapon/opt/bin/ecj-4.3.1.jar")
+(defcustom jx/ecj-path "~/bin/ecj.jar"
+  "The full path to Java Eclipse Compiler"
+  :group 'javax
+  :type 'string
+  :safe 'stringp)
 
 (defvar jx/project-config-filename ".javax-project.el"
   "Project configuration file")
