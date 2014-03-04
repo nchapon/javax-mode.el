@@ -75,8 +75,14 @@
       (read (buffer-string)))))
 
 (defun jx/classpath ()
-  (jx/build-classpath
-   (cdr (assoc :dependencies (jx/read-config-file)))))
+  "Concatenate dependencies managed by maven and project classes
+build directoriies"
+  (-concat
+   (jx/build-classpath
+    (cdr (assoc :dependencies (jx/read-config-file))))
+   (-map
+    (lambda (path) (expand-file-name path (jx/project-dir)))
+    (cdr (assoc :lib-paths (jx/read-config-file))))))
 
 (defun jx/get-classpath ()
   "Get full classpath, all entries are separated by Unix default
