@@ -99,7 +99,7 @@ separator ':'"
   (mapconcat 'identity (jx/classpath) ":"))
 
 
-(defvar jx/mvn-dependency-pattern "\\[INFO\\] .* \\([0-9A-Za-z.-]+\\):\\([0-9A-Za-z.-]+\\):\\(jar\\):\\([0-9A-Za-z.-]+\\):\\(test\\|compile\\)$" "MATCH Dependencies regexp")
+(defvar jx/mvn-dependency-pattern "\\[INFO\\] .* \\([0-9A-Za-z.-]+\\):\\([0-9A-Za-z.-]+\\):\\(jar\\):\\([0-9A-Za-z.-]+\\):\\(test\\|compile\\)" "MATCH Dependencies regexp")
 
 
 (defun jx/match-dependency (&optional string)
@@ -116,12 +116,11 @@ separator ':'"
    (format "cd %s; mvn dependency:tree"
            (locate-dominating-file (buffer-file-name) "pom.xml"))))
 
-(defun jx/get-mvn-project-dependencies ()
+(defun jx/get-mvn-project-dependencies (mvn-output)
   "Get project dependencies in mvn format
    <groupid>:<artifactid>:<type>:<version>:<scope>"
   (interactive)
-  (let ((mvn-output (jx/mvn-dependency-tree-command))
-        (deps '())
+  (let ((deps '())
         (start 0))
     (while (string-match jx/mvn-dependency-pattern mvn-output start)
       (push (mapconcat 'identity (jx/match-dependency mvn-output) ":") deps)
@@ -147,7 +146,7 @@ separator ':'"
 (defun jx/update-config ()
   "Create project-file"
   (interactive)
-  (jx/update-dependencies (jx/get-mvn-project-dependencies))
+  (jx/update-dependencies (jx/get-mvn-project-dependencies (jx/mvn-dependency-tree-command)))
   (jx/dump-vars-to-file jx/default-config
                      (jx/expand-project-config-file)))
 
