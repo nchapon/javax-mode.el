@@ -19,3 +19,10 @@
                 (jx/get-mvn-project-dependencies
                  "[INFO] +- junit:junit:jar:4.10:test (scope not updated to compile)")
                 "junit:junit:jar:4.10:test")))
+
+;; Used to fix dependencies duplicate
+(ert-deftest dependencies-should-be-always-overwritten ()
+  (jx/update-dependencies '("org:hibernate:jar:3.2.5:compile"))
+  (jx/update-dependencies '("junit:junit:jar:4.10:test" "org:log4j:jar:1.10:compile"))
+  (should (equal (cdr (assoc :dependencies jx/default-config))
+                 '("junit:junit:jar:4.10:test" "org:log4j:jar:1.10:compile"))))

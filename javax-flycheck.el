@@ -140,8 +140,7 @@ separator ':'"
 
 (defun jx/update-dependencies (dependencies)
   "Update project dependencies"
-  (let ((deps (cdr (assoc :dependencies jx/default-config))))
-    (setf (cdr (assoc :dependencies jx/default-config)) (append deps dependencies))))
+  (setf (cdr (assoc :dependencies jx/default-config)) dependencies))
 
 (defun jx/update-config ()
   "Create project-file"
