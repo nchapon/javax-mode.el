@@ -8,6 +8,8 @@
 *** TODO Add hook after save pom.xml to update project config
 *** DONE User can customize MVN_REPO path
 *** DONE User can customize ECJ path
+*** TODO Configuration of JVM version
+*** TODO Configuration of ECJ options
 
 
 ** Editing source code
