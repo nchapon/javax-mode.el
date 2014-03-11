@@ -99,7 +99,7 @@ separator ':'"
   (mapconcat 'identity (jx/classpath) ":"))
 
 
-(defvar jx/mvn-dependency-pattern "\\[INFO\\] .* \\([0-9A-Za-z.-]+\\):\\([0-9A-Za-z.-]+\\):\\(jar\\):\\([0-9A-Za-z.-]+\\):\\(test\\|compile\\)" "MATCH Dependencies regexp")
+(defvar jx/mvn-dependency-pattern "\\[INFO\\] .* \\([0-9A-Za-z.-]+\\):\\([0-9A-Za-z.-]+\\):\\(jar\\):\\([0-9A-Za-z.-]+\\):\\(test\\|compile\\|provided\\)" "MATCH Dependencies regexp")
 
 
 (defun jx/match-dependency (&optional string)

@@ -14,6 +14,12 @@
                  "[INFO] +- junit:junit:jar:4.10:test")
                 "junit:junit:jar:4.10:test")))
 
+(ert-deftest extract-mvn-dependencies-when-scope-is-provided ()
+       (should (-contains?
+                (jx/get-mvn-project-dependencies
+                 "[INFO] +- javax.servlet:javax.servlet-api:jar:3.0.1:provided")
+                "javax.servlet:javax.servlet-api:jar:3.0.1:provided")))
+
 (ert-deftest extract-mvn-dependencies-when-scope-is-test-with-message ()
        (should (-contains?
                 (jx/get-mvn-project-dependencies
