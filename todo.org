@@ -16,3 +16,8 @@
 *** TODO Customize order/sort for Organize Imports
 *** TODO Navigate to source code in dependency
 *** TODO Add real autocomplete mode
+
+
+** Improved
+*** TODO Can execute test from source buffer
+*** TODO Can manage lombok

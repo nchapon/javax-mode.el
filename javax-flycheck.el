@@ -47,20 +47,20 @@
     (jx/get-mvn-version d)
     (jx/get-mvn-type d)))
 
-(defun jx/get-mvn-depency-path (dependency)
+(defun jx/get-mvn-dependency-path (dependency)
   "Get maven dependency path from DEPENDENCY"
   (format "%s/%s/%s/%s/%s"
           jx/mvn-repo-path
-          (jx/get-mvn-groupid dep)
-          (jx/get-mvn-artifactid dep)
-          (jx/get-mvn-version dep)
-          (jx/get-mvn-artifact-name dep)))
+          (jx/get-mvn-groupid dependency)
+          (jx/get-mvn-artifactid dependency)
+          (jx/get-mvn-version dependency)
+          (jx/get-mvn-artifact-name dependency)))
 
 (defun jx/build-classpath (dependencies)
   "Build classpath from maven DEPENDENCIES"
   (let ((cp '("rt.jar")))
     (dolist (dep dependencies)
-      (push (jx/get-mvn-depency-path dep) cp))
+      (push (jx/get-mvn-dependency-path dep) cp))
     cp))
 
 (defun jx/mvn-current-project-dir ()
