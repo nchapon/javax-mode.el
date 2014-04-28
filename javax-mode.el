@@ -1,6 +1,7 @@
 ;;; javax-mode.el --- Minor mode to improve java experience in Emacs
 (require 'cc-mode)
 (require 'compile)
+(require 'javax-project-config)
 (require 'javax-flycheck)
 
 
