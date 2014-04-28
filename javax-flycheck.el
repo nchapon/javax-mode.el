@@ -12,6 +12,7 @@
   :type 'string
   :safe 'stringp)
 
+
 (defvar jx/project-config-filename ".javax-project.el"
   "Project configuration file")
 
@@ -40,27 +41,36 @@
 (defun jx/get-mvn-type (dependency)
   (jx/get-mvn-metadata dependency 2))
 
-(defun jx/get-mvn-artifact-name (d)
-  "Get maven artifact name from d"
+(defun jx/mvn-artifact-name (d)
+  "Get maven artifact name for dependency D"
   (format "%s-%s.%s"
     (jx/get-mvn-artifactid d)
     (jx/get-mvn-version d)
     (jx/get-mvn-type d)))
 
-(defun jx/get-mvn-dependency-path (dependency)
+(defun jx/mvn-artifact-source-name (d)
+  "Get maven artifact source name for dependency D"
+  (format "%s-%s-sources.%s"
+    (jx/get-mvn-artifactid d)
+    (jx/get-mvn-version d)
+    (jx/get-mvn-type d)))
+
+
+(defun jx/get-mvn-dependency-path (callback dependency)
   "Get maven dependency path from DEPENDENCY"
   (format "%s/%s/%s/%s/%s"
           jx/mvn-repo-path
           (jx/get-mvn-groupid dependency)
           (jx/get-mvn-artifactid dependency)
           (jx/get-mvn-version dependency)
-          (jx/get-mvn-artifact-name dependency)))
+          (funcall callback dependency)))
+
 
 (defun jx/build-classpath (dependencies)
   "Build classpath from maven DEPENDENCIES"
-  (let ((cp '("rt.jar")))
+  (let ((cp '()))
     (dolist (dep dependencies)
-      (push (jx/get-mvn-dependency-path dep) cp))
+      (push (jx/get-mvn-dependency-path 'jx/mvn-artifact-name dep) cp))
     cp))
 
 (defun jx/mvn-current-project-dir ()
@@ -98,6 +108,23 @@ separator ':'"
   (interactive)
   (mapconcat 'identity (jx/classpath) ":"))
 
+
+(defun jx/get-source  (lib)
+  "DOCSTRING"
+  (let ((src (jx/get-mvn-dependency-path 'jx/mvn-artifact-source-name lib)))
+    (when (file-exists-p src)
+      (make-directory
+       (expand-file-name
+        (file-name-sans-extension src)
+        (format "%s.javax-sources" (jx/project-dir)))) ;; To refactor
+      ;; (shell-command (format "unzip -d %s.javax-sources %s" (jx/project-dir) src))
+      )))
+
+(defun jx/src-libs ()
+ "Get source code for dependencies"
+ (interactive)
+ (dolist (lib (cdr (assoc :dependencies (jx/read-config-file))))
+   (jx/get-source lib)))
 
 (defvar jx/mvn-dependency-pattern "\\[INFO\\] .* \\([0-9A-Za-z.-]+\\):\\([0-9A-Za-z.-]+\\):\\(jar\\):\\([0-9A-Za-z.-]+\\):\\(test\\|compile\\|provided\\)" "MATCH Dependencies regexp")
 
@@ -149,28 +176,36 @@ separator ':'"
   (jx/dump-vars-to-file jx/default-config
                      (jx/expand-project-config-file)))
 
-;;; Define Flycheck Checker
-(when (featurep 'flycheck-autoloads)
-  (flycheck-define-checker java-syntax
-    "Check syntax of java code using ecj compiler"
-    :command   ("java"
-                "-Xms128m"
-                "-Xmx128m"
-                "-jar" (eval jx/ecj-path)
-                "-d" "none"
-                "-1.7"
-                "-Xemacs"
-                "-cp" (eval (jx/get-classpath))
-                source)
-    :error-patterns
-    ((warning line-start (file-name) ":" line
-              ": warning:" (message) line-end)
-     (error line-start (file-name) ":" line
-            ": error:" (message) line-end))
-    :modes java-mode)
 
-  (add-to-list 'flycheck-checkers 'java-syntax))
 
+;;; Define Java Checker
+(flycheck-define-checker java
+  "Check syntax of java code using ecj compiler"
+  :command   ("java"
+              "-Xms128m"
+              "-Xmx128m"
+              "-jar" (eval jx/ecj-path)
+              "-d" "none"
+              "-1.8"
+              "-Xemacs"
+              "-cp" (eval (jx/get-classpath))
+              source)
+  :error-patterns
+  ((warning line-start (file-name) ":" line
+            ": warning:" (message) line-end)
+   (error line-start (file-name) ":" line
+          ": error:" (message) line-end))
+  :modes java-mode)
+
+(add-to-list 'flycheck-checkers 'java)
+
+
+(defun jx/flycheck-java-setup ()
+  "Gets JAVA exccutable from USER path and setup flycheck."
+   (setq flycheck-java-executable
+         (s-trim (shell-command-to-string "which java"))))
+
+(add-hook 'flycheck-mode-hook #'jx/flycheck-java-setup)
 
 (provide 'javax-flycheck)
 ;;; javax-flycheck ends here
