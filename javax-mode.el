@@ -122,6 +122,24 @@
   "Returns java project dir for current buffer"
   (locate-dominating-file (buffer-file-name) ".git"))
 
+
+(defun jx/find-file-from-external-sources(archive sourcefile)
+  "Find SOURCEFILE from ARCHIVE, should be a ZIP or JAR file."
+  (interactive)
+  (with-current-buffer (find-file-noselect archive)
+    (goto-char (point-min))
+    (when (search-forward sourcefile nil t)
+      (let ((filename (match-string 0)))
+        (message "Opening %s...." filename)
+        (archive-view)))))
+
+(defun jx/external-src-handler (symbol)
+  "DOCSTRING"
+  (let ((package (jx/find-symbol-package symbol)))
+    (jx/find-file-from-external-sources
+     (expand-file-name "src.zip" (getenv "JAVA_HOME"))
+     (format "%s%s.java" (s-replace "." "/" package) symbol))))
+
 (defun jx/find-file (symbol)
   "Find java file from project root"
   (let ((package (jx/find-symbol-package symbol)))
@@ -133,7 +151,7 @@
   "Create a handler to lookup java source code for SYMBOL"
   (let ((results (jx/find-file symbol)))
     (cond
-     ((string= "" results) (message "No source file for symbol %s" symbol))
+     ((string= "" results) (jx/external-src-handler symbol))
      (t (find-file (first (split-string results)))))))
 
 (defun jx/src (query)
