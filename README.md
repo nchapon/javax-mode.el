@@ -10,7 +10,7 @@ Extends _java-mode_ build source code and run tests with Maven.
 
 You need to have installed Java and Maven and setup two environments variables by default in `.bash_profile`
 * set `JAVA_HOME` to target Java home directory
-* add `mvn` commnand  `PATH`
+* add `mvn` commnand  in your `PATH`
 
 Add this in your emacs configuration
 ```el
@@ -64,8 +64,8 @@ In any java buffer simply enable flycheck mode, enter <kbd>M-x flycheck-mode</kb
 
 ### Known Limitations ###
 
-* Could not work with Lombok
-* Not tested with JDK 1.8
+* At this moment could not work with Lombok
+
 
 
 ## Development ##
@@ -100,4 +100,4 @@ This library is used to write [Cucumber](http://cukes.info/)-like tests for Emac
 + Extend navigate to source code in dependencies
 + Add a real autocomplete mode
 + Can execute test not only from test case but from java source code under test buffer
-+ Flycheck should work with lombok and Java 8
++ Flycheck should work with lombok
