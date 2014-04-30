@@ -67,8 +67,7 @@
 (defun jx/path-for (package)
   "Convert PACKAGE name to real path."
   (interactive)
-  (let ((segments (split-string package "\\." t)))
-    (mapconcat 'identity segments "/")))
+  (s-replace "." "/" package))
 
 
 (defun jx/find-package ()
@@ -80,15 +79,16 @@
           (match-string-no-properties 2)))
 
 
-(defun jx/find-symbol-package (symbol)
-  "Find the package for the current SYMBOL"
+(defun jx/find-symbol-package (symbol &optional default)
+  "Find the package for the current SYMBOL, use DEFAULT if not found"
   (interactive)
   (save-excursion
     (goto-char (point-min))
     (let ((case-fold-search t))
       (if (re-search-forward (format "\\(^import \\(.*\\)%s;$\\)" symbol) nil t)
-        (match-string-no-properties 2)
-      (jx/find-package)))))
+          (match-string-no-properties 2)
+        (cond ((s-blank? default) (jx/find-package))
+              (t default))))))
 
 (defun jx/electric-brace ()
   "Insert automatically close brace after 2 new lines."
@@ -130,15 +130,14 @@
     (goto-char (point-min))
     (when (search-forward sourcefile nil t)
       (let ((filename (match-string 0)))
-        (message "Opening %s...." filename)
         (archive-view)))))
 
-(defun jx/external-src-handler (symbol)
-  "DOCSTRING"
-  (let ((package (jx/find-symbol-package symbol)))
+(defun jx/java-src-handler (symbol)
+  "Find source file for SYMBOL in Java Source Code"
+  (let ((package (jx/find-symbol-package symbol "java.lang.")))
     (jx/find-file-from-external-sources
      (expand-file-name "src.zip" (getenv "JAVA_HOME"))
-     (format "%s%s.java" (s-replace "." "/" package) symbol))))
+     (format "%s%s.java" (jx/path-for package) symbol))))
 
 (defun jx/find-file (symbol)
   "Find java file from project root"
@@ -151,7 +150,7 @@
   "Create a handler to lookup java source code for SYMBOL"
   (let ((results (jx/find-file symbol)))
     (cond
-     ((string= "" results) (jx/external-src-handler symbol))
+     ((string= "" results) (jx/java-src-handler symbol))
      (t (find-file (first (split-string results)))))))
 
 (defun jx/src (query)
