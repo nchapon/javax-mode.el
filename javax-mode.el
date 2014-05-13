@@ -132,11 +132,28 @@
       (let ((filename (match-string 0)))
         (archive-view)))))
 
+(defun jx/java-package? (package)
+  "DOCSTRING"
+  (interactive)
+  (or
+   (s-starts-with? "java" package)
+   (s-starts-with? "javax" package)
+   (s-starts-with? "com.sun" package)
+   (s-starts-with? "org.w3c" package)))
+
+
+(defun jx/find-archive-file-for (package)
+  "Find archive file for PACKAGE"
+  (interactive)
+  (if (jx/java-package? package)
+      (expand-file-name "src.zip" (getenv "JAVA_HOME"))
+    (error "Archive not found for %s" package)))
+
 (defun jx/java-src-handler (symbol)
   "Find source file for SYMBOL in Java Source Code"
   (let ((package (jx/find-symbol-package symbol "java.lang.")))
     (jx/find-file-from-external-sources
-     (expand-file-name "src.zip" (getenv "JAVA_HOME"))
+     (jx/find-archive-file-for package)
      (format "%s%s.java" (jx/path-for package) symbol))))
 
 (defun jx/find-file (symbol)
