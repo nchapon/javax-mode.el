@@ -28,6 +28,18 @@
   :type 'list
   :safe 'listp)
 
+(defun jx/project-dir ()
+  "Returns root project dir for current buffer"
+  (-if-let (git-project (locate-dominating-file (buffer-file-name) ".git"))
+      git-project
+    (error "Unable to locate root project dir !!!")))
+
+(defun jx/mvn-project-dir ()
+  "Returns maven project dir for current buffer"
+  (-if-let (mvn-project (locate-dominating-file (buffer-file-name) "pom.xml"))
+      mvn-project
+    (error "Unable to locate maven pom.xml !!!")))
+
 (defun jx/mvn-build ()
   "Builds current maven project"
   (interactive)
@@ -47,7 +59,7 @@
   (compile
         (format
          jx/mvn-compile-command
-         (locate-dominating-file (buffer-file-name) "pom.xml")
+         (jx/mvn-project-dir)
          (car(split-string (buffer-name) "\\.")))))
 
 (defun jx/mvn-test ()
@@ -56,7 +68,7 @@
   (compile
         (format
          "cd %s; mvn -Dtest=%s test"
-         (locate-dominating-file (buffer-file-name) "pom.xml")
+         (jx/mvn-project-dir)
          (car(split-string (buffer-name) "\\.")))))
 
 ;;; For maven 2/3 output
@@ -118,12 +130,7 @@
       (funcall callback symbol-name))
      (t (funcall callback (read-from-minibuffer prompt))))))
 
-(defun jx/project-dir ()
-  "Returns java project dir for current buffer"
-  (locate-dominating-file (buffer-file-name) ".git"))
-
-
-(defun jx/find-file-from-external-sources(archive sourcefile)
+(defun jx/find-file-from-archive (archive sourcefile)
   "Find SOURCEFILE from ARCHIVE, should be a ZIP or JAR file."
   (interactive)
   (with-current-buffer (find-file-noselect archive)
@@ -152,12 +159,12 @@
 (defun jx/java-src-handler (symbol)
   "Find source file for SYMBOL in Java Source Code"
   (let ((package (jx/find-symbol-package symbol "java.lang.")))
-    (jx/find-file-from-external-sources
+    (jx/find-file-from-archive
      (jx/find-archive-file-for package)
      (format "%s%s.java" (jx/path-for package) symbol))))
 
 (defun jx/find-file (symbol)
-  "Find java file from project root"
+  "Find java file from project root for SYMBOL"
   (let ((package (jx/find-symbol-package symbol)))
     (shell-command-to-string
     (format "find %s -iname %s.java -print0 | grep -FzZ %s"
@@ -185,7 +192,7 @@ point, prompts for a var"
   "Returns the path of the the test file for a given PACKAGE."
   (format
    "%ssrc/test/java/%s/%sTest.java"
-   (locate-dominating-file (buffer-file-name) "pom.xml")
+   (jx/mvn-project-dir)
    (jx/path-for package)
    (car (split-string (buffer-name) "\\.java"))))
 
@@ -193,7 +200,7 @@ point, prompts for a var"
   "Returns the path of the the implementaion file for a given PACKAGE."
   (format
    "%ssrc/main/java/%s/%s.java"
-   (locate-dominating-file (buffer-file-name) "pom.xml")
+   (jx/mvn-project-dir)
    (jx/path-for package)
    (car (split-string (buffer-name) "Test\\.java"))))
 
