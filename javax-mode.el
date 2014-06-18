@@ -102,19 +102,19 @@
         (cond ((s-blank? default) (jx/find-package))
               (t default))))))
 
-(defun jx/electric-brace ()
-  "Insert automatically close brace after 2 new lines."
-  (interactive)
-  (insert " {")
-  (backward-char)
-  (fixup-whitespace)
-  (move-end-of-line 1)
-  (indent-for-tab-command)
-  (insert "\n\n")
-  (insert "}")
-  (indent-for-tab-command)
-  (previous-line)
-  (indent-for-tab-command))
+;; (defun jx/electric-brace ()
+;;   "Insert automatically close brace after 2 new lines."
+;;   (interactive)
+;;   (insert " {")
+;;   (backward-char)
+;;   (fixup-whitespace)
+;;   (move-end-of-line 1)
+;;   (indent-for-tab-command)
+;;   (insert "\n\n")
+;;   (insert "}")
+;;   (indent-for-tab-command)
+;;   (previous-line)
+;;   (indent-for-tab-command))
 
 (defun jx/symbol-at-point ()
   "Read symbol at point"
@@ -309,7 +309,7 @@ point, prompts for a var"
 
 (defvar javax-mode-map
   (let ((map (make-sparse-keymap)))
-    (define-key java-mode-map (kbd "{") 'jx/electric-brace)
+    ;;(define-key java-mode-map (kbd "{") 'jx/electric-brace)
     (define-key java-mode-map (kbd "C-c C-b") 'jx/mvn-build)
     (define-key java-mode-map (kbd "C-c C-k") 'jx/mvn-compile)
     (define-key java-mode-map (kbd "C-c C-r") 'jx/mvn-test)
