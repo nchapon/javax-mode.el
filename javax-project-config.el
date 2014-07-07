@@ -163,17 +163,32 @@ separator ':'"
       (save-buffer)
       (kill-buffer))))
 
-(defun jx/update-dependencies (dependencies)
-  "Update project dependencies"
-  (setf (cdr (assoc :dependencies jx/default-config)) dependencies))
 
-(defun jx/update-config ()
-  "Create project-file"
+(defun jx/update-config-param (param value)
+  "Update config PARAM with VALUE"
   (interactive)
-  (jx/update-dependencies (jx/get-mvn-project-dependencies (jx/mvn-dependency-tree-command)))
+  (setf (cdr (assoc param jx/default-config)) value))
+
+(defun jx/jdk-is-valid? (jdk)
+  "Validate JDK version"
+  (or
+   (string= jdk "1.8")
+   (string= jdk "1.7")
+   (string= jdk "1.6")))
+
+
+(defun jx/update-config (jdk)
+  "Create project config file for JDK"
+  (interactive "sPlease specify JDK version (1.6, 1.7 or 1.8) ? ")
+  (if (not (jx/jdk-is-valid? jdk))
+     (error "JDK %s is not valid you should use 1.6, 1.7 or 1.8" jdk))
+  (jx/update-config-param :source jdk)
+  (jx/update-config-param :target jdk)
+  (jx/update-config-param :dependencies (jx/get-mvn-project-dependencies (jx/mvn-dependency-tree-command))
+   )
   (jx/dump-vars-to-file jx/default-config
                      (jx/expand-project-config-file)))
 
 
 (provide 'javax-project-config)
-;;; javax-flycheck ends here
+;;; javax-project-config ends here
