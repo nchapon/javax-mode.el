@@ -39,7 +39,7 @@ ECJ is running in batch mode each time the source code is modified in a Java buf
 The Java classpath is built from maven command `mvn dependency:tree`
 
 ### Installation ###
-* First you need to install emacs flycheck package (see instructions [here](https://github.com/flycheck/flycheck#installation)
+* First you need to install emacs flycheck package (see instructions [here](https://github.com/flycheck/flycheck#installation))
 * Download [ECJ](http://download.eclipse.org/eclipse/downloads/drops4/R-4.3.2-201402211700/download.php?dropFile=ecj-4.3.2.jar)
 
 ### Configuration ###
@@ -50,7 +50,7 @@ The Java classpath is built from maven command `mvn dependency:tree`
 
 * Configure `jx/ecj-path` to target ECJ executable tool
 ```el
-(setq jx/ecj-path "/home/nchapon/opt/bin/ecj-4.3.1.jar")
+(setq jx/ecj-path "/home/nchapon/opt/bin/ecj-4.3.2.jar")
 ```
 
 ### Before starting ###
