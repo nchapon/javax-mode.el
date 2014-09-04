@@ -29,10 +29,13 @@
   :safe 'listp)
 
 (defun jx/project-dir ()
-  "Returns root project dir for current buffer"
+  "Returns root project dir for current buffer, should be the
+directory that contains :
+  - first, .git folder,
+  - second, pom.xml file"
   (-if-let (git-project (locate-dominating-file (buffer-file-name) ".git"))
       git-project
-    (error "Unable to locate root project dir !!!")))
+    (jx/mvn-project-dir)))
 
 (defun jx/mvn-project-dir ()
   "Returns maven project dir for current buffer"
