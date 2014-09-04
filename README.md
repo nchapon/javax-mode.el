@@ -27,8 +27,8 @@ The only requirement is to have a Java Maven project.
 
 ### Commands ###
 
-Keybinding          | Description
-----------------------------------------
+Keybinding         | Description
+-------------------|------------------------------------------------------------
 <kbd>C-c j t</kbd>  | Jump between test and code
 <kbd>C-c j s</kbd>  | Open source file
 <kbd>C-c j o</kbd>  | Organize imports
