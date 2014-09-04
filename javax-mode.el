@@ -309,13 +309,12 @@ point, prompts for a var"
 
 (defvar javax-mode-map
   (let ((map (make-sparse-keymap)))
-    ;;(define-key java-mode-map (kbd "{") 'jx/electric-brace)
-    (define-key java-mode-map (kbd "C-c C-b") 'jx/mvn-build)
-    (define-key java-mode-map (kbd "C-c C-k") 'jx/mvn-compile)
-    (define-key java-mode-map (kbd "C-c C-r") 'jx/mvn-test)
-    (define-key java-mode-map (kbd "C-c C-t") 'jx/jump-between-tests-and-code)
-    (define-key java-mode-map (kbd "C-c C-s") 'jx/src)
-    (define-key java-mode-map (kbd "C-c C-o") 'jx/organize-imports)
+    (define-key java-mode-map (kbd "C-c jb") 'jx/mvn-build)
+    (define-key java-mode-map (kbd "C-c jc") 'jx/mvn-compile)
+    (define-key java-mode-map (kbd "C-c jxt") 'jx/mvn-test)
+    (define-key java-mode-map (kbd "C-c jt") 'jx/jump-between-tests-and-code)
+    (define-key java-mode-map (kbd "C-c js") 'jx/src)
+    (define-key java-mode-map (kbd "C-c jo") 'jx/organize-imports)
     map)
   "Keymap for Javax mode.")
 

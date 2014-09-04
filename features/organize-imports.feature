@@ -20,7 +20,7 @@ Feature: Organize Imports
     }
     """
     And I go to end of buffer
-    And I press "C-c C-o"
+    And I press "C-c j o"
     Then I should not see:
     """
     import org.jx.NotUsed;
@@ -46,7 +46,7 @@ Feature: Organize Imports
     }
     """
     And I go to end of buffer
-    And I press "C-c C-o"
+    And I press "C-c j o"
     Then I should see:
     """
     import org.jx.Annotation;
@@ -70,7 +70,7 @@ Feature: Organize Imports
     }
     """
     And I go to end of buffer
-    And I press "C-c C-o"
+    And I press "C-c j o"
     Then I should see:
     """
     import static org.jx.StaticClass.*;

@@ -6,11 +6,11 @@ Feature: Jump between source code and test
   Scenario: Jump to test case from source code
     When I open file "tmp/src/main/java/org/jx/App.java"
     And I press "M-<"
-    And I press "C-c C-t"
+    And I press "C-c j t"
     Then the file should be named "AppTest.java"
 
   Scenario: Jump to source code from test class
     When I open file "tmp/src/test/java/org/jx/AppTest.java"
     And I press "M->"
-    And I press "C-c C-t"
+    And I press "C-c j t"
     Then the file should be named "App.java"

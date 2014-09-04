@@ -26,7 +26,7 @@ Feature: Group and order imports when organize Imports
     }
     """
     And I go to end of buffer
-    And I press "C-c C-o"
+    And I press "C-c j o"
     Then I should see:
     """
     package org.jx;
@@ -69,7 +69,7 @@ Feature: Group and order imports when organize Imports
     }
     """
     And I go to end of buffer
-    And I press "C-c C-o"
+    And I press "C-c j o"
     Then I should see:
     """
     package org.jx;
@@ -97,8 +97,8 @@ Feature: Group and order imports when organize Imports
  Scenario: Should keep one blank lines before and after when organize import two or more times
     When I open file "tmp/src/main/java/org/jx/system/Calculator.java"
     And I go to end of buffer
-    And I press "C-c C-o"
-    And I press "C-c C-o"
+    And I press "C-c j o"
+    And I press "C-c j o"
     Then I should see:
     """
     package org.jx.system;
