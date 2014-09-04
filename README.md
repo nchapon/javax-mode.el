@@ -24,13 +24,17 @@ Add this in your emacs configuration
 
 ## Usage ##
 The only requirement is to have a Java Maven project.
-+ `C-c j t` Jump between test and code
-+ `C-c j s` Open source file
-+ `C-c j o` Organize imports, remove all unused imports
-+ `C-c j x t` Run test.
-Use mvn command line to run a simgle test `mvn -Dtest=<testcase> test`
-+ `C-c j c` Compile source code from mvn command line `mvn -o compile`
-+ `C-c j b` Build project from mvn command line `mvn -f <pom-parent> clean install`
+
+### Commands ###
+
+Keybinding          | Description
+----------------------------------------
+<kbd>C-c j t</kbd>  | Jump between test and code
+<kbd>C-c j s</kbd>  | Open source file
+<kbd>C-c j o</kbd>  | Organize imports
+<kbd>C-c j x t</kbd>  | Run JUnit tests for buffer
+<kbd>C-c j c</kbd>  | Compile source code from mvn command line `mvn -o compile`
+<kbd>C-c j c</kbd>  | Build project from mvn command line `mvn -f <pom-parent> clean install`
 
 ## Flycheck
 
