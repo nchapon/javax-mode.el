@@ -166,12 +166,18 @@ directory that contains :
      (jx/find-archive-file-for package)
      (format "%s%s.java" (jx/path-for package) symbol))))
 
+
+(defun jx/strip-path-suffix (path)
+  "Strip C-@ suffix from PATH if necessary"
+  (s-chop-suffix (char-to-string ?\0) path))
+
 (defun jx/find-file (symbol)
   "Find java file from project root for SYMBOL"
   (let ((package (jx/find-symbol-package symbol)))
-    (shell-command-to-string
-    (format "find %s -iname %s.java -print0 | grep -FzZ %s"
-            (jx/project-dir) symbol (jx/path-for package)))))
+    (jx/strip-path-suffix
+     (shell-command-to-string
+      (format "find %s -iname %s.java -print0 | grep -FzZ %s"
+              (jx/project-dir) symbol (jx/path-for package))))))
 
 (defun jx/src-handler (symbol)
   "Create a handler to lookup java source code for SYMBOL"
