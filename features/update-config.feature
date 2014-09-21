@@ -6,7 +6,7 @@ Feature: Configure / Init a JX project from a maven simple project.
   Scenario: If no jx-project file create it
     When I open file "tmp/src/main/java/org/jx/App.java"
     And I go to end of buffer
-    And I press "M-x jx/update-config"
+    And I press "M-x jx/update-config C-j 1.7"
     Then there should exist a file called ".javax-project.el" with this content:
     """
     ((:source . "1.7")
