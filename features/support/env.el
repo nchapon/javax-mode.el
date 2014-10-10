@@ -25,8 +25,8 @@
 
 
 (Setup
- ;; Before anything has run
- )
+ ;; Before anything has run be init m2_repo
+ (setq jx/mvn-repo-path (s-trim (shell-command-to-string "mvn help:evaluate -Dexpression=settings.localRepository | grep -v '[INFO]'"))))
 
 (Before
  ;; Before each scenario is run

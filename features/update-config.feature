@@ -12,6 +12,6 @@ Feature: Configure / Init a JX project from a maven simple project.
     ((:source . "1.7")
      (:target . "1.7")
      (:options . "-warn:+over-ann,uselessTypeCheck -proceedOnError -maxProblems 100")
-     (:dependencies "ch.qos.logback:logback-core:jar:1.1.0:compile" "ch.qos.logback:logback-classic:jar:1.1.0:compile" "org.slf4j:slf4j-api:jar:1.7.5:compile" "org.assertj:assertj-core:jar:1.5.0:test" "org.hamcrest:hamcrest-core:jar:1.3:test" "junit:junit:jar:4.11:test")
+     (:classpath "M2_REPO/junit/junit/4.11/junit-4.11.jar" "M2_REPO/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar" "M2_REPO/org/assertj/assertj-core/1.5.0/assertj-core-1.5.0.jar" "M2_REPO/org/slf4j/slf4j-api/1.7.5/slf4j-api-1.7.5.jar" "M2_REPO/ch/qos/logback/logback-classic/1.1.0/logback-classic-1.1.0.jar" "M2_REPO/ch/qos/logback/logback-core/1.1.0/logback-core-1.1.0.jar")
      (:lib-paths "target/classes" "target/test-classes"))
     """
