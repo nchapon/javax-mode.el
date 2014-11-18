@@ -85,8 +85,8 @@ directory that contains :
   (s-replace "." "/" package))
 
 
-(defun jx/find-package ()
-  "Find current buffer package"
+(defun jx/class-package ()
+  "Returns declaration class package for current buffer."
   (interactive)
   (save-excursion
     (goto-char (point-min))
@@ -94,15 +94,15 @@ directory that contains :
           (match-string-no-properties 2)))
 
 
-(defun jx/find-symbol-package (symbol &optional default)
-  "Find the package for the current SYMBOL, use DEFAULT if not found"
+(defun jx/find-class-package (class &optional default)
+  "Find the package for the current CLASS, use DEFAULT if not found"
   (interactive)
   (save-excursion
     (goto-char (point-min))
     (let ((case-fold-search t))
-      (if (re-search-forward (format "\\(^import \\(.*\\)%s;$\\)" symbol) nil t)
+      (if (re-search-forward (format "\\(^import \\(.*\\)%s;$\\)" class) nil t)
           (match-string-no-properties 2)
-        (cond ((s-blank? default) (jx/find-package))
+        (cond ((s-blank? default) (jx/class-package))
               (t default))))))
 
 ;; (defun jx/electric-brace ()
@@ -159,9 +159,9 @@ directory that contains :
       (expand-file-name "src.zip" (getenv "JAVA_HOME"))
     (error "Archive not found for %s" package)))
 
-(defun jx/java-src-handler (symbol)
-  "Find source file for SYMBOL in Java Source Code"
-  (let ((package (jx/find-symbol-package symbol "java.lang.")))
+(defun jx/java-src-handler (class)
+  "Find source file for CLASS in Java Source Code"
+  (let ((package (jx/find-class-package class "java.lang.")))
     (jx/find-file-from-archive
      (jx/find-archive-file-for package)
      (format "%s%s.java" (jx/path-for package) symbol))))
@@ -171,9 +171,9 @@ directory that contains :
   "Strip C-@ suffix from PATH if necessary"
   (s-chop-suffix (char-to-string ?\0) path))
 
-(defun jx/find-file (symbol)
-  "Find java file from project root for SYMBOL"
-  (let ((package (jx/find-symbol-package symbol)))
+(defun jx/find-file (class)
+  "Find java file from project root for CLASS"
+  (let ((package (jx/find-class-package class)))
     (jx/strip-path-suffix
      (shell-command-to-string
       (format "find %s -iname %s.java -print0 | grep -FzZ %s"
@@ -216,11 +216,11 @@ point, prompts for a var"
 (defun jx/jump-to-test ()
   "Jump from implementation file to test."
   (interactive)
-    (find-file (jx/test-for (jx/find-package))))
+    (find-file (jx/test-for (jx/class-package))))
 
 (defun jx/jump-to-implementation ()
   "Jump from test file to implementation."
-  (find-file (jx/implementation-for (jx/find-package))))
+  (find-file (jx/implementation-for (jx/class-package))))
 
 (defun jx/jump-between-tests-and-code ()
   "Jump between tests and code"
