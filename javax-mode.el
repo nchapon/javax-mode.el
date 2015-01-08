@@ -3,7 +3,7 @@
 (require 'compile)
 (require 'javax-project-config)
 (require 'javax-flycheck)
-
+(require 'easymenu)
 
 (defcustom jx/mvn-build-command "mvn -f %spom.xml clean install"
   "Format string to run mvn build command. his format string
@@ -324,6 +324,19 @@ point, prompts for a var"
     (define-key java-mode-map (kbd "C-c jt") 'jx/jump-between-tests-and-code)
     (define-key java-mode-map (kbd "C-c js") 'jx/src)
     (define-key java-mode-map (kbd "C-c jo") 'jx/organize-imports)
+    (easy-menu-define javax-mode-menu map
+      "Menu for Javax mode"
+      `("Javax"
+        ["Jump to source" jx/src]
+        ["Jump to test" jx/jump-between-tests-and-code]
+        "--"
+        ["Organize imports" jx/organize-imports]
+        "--"
+        ["Maven Compile" jx/mvn-compile]
+        ["Maven test buffer" jx/mvn-test]
+        ["Maven build" jx/mvn-build]
+        "--"
+        ["Update config" jx/update-config]))
     map)
   "Keymap for Javax mode.")
 
