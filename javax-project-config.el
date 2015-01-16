@@ -24,14 +24,14 @@
 
 
 
-(defun jx/expand-path(path)
+(defun jx/expand-m2-repo-path(path)
   "Expand classpath PATH with M2_REPO"
   (s-replace
    "M2_REPO"
    jx/mvn-repo-path
    path))
 
-(defun jx/abbrev-path(path)
+(defun jx/abbrev-m2-repo-path(path)
   "Abbrev classpath PATH with M2_REPO"
   (s-replace
    jx/mvn-repo-path
@@ -40,7 +40,7 @@
 
 (defun jx/expand-classpath (paths)
   "Build classpath from classpath PATHS"
-  (-map 'jx/expand-path paths))
+  (-map 'jx/expand-m2-repo-path paths))
 
 (defun jx/mvn-current-project-dir ()
   "Returns current maven project directory"
@@ -115,7 +115,7 @@ separator ':'"
 
 (defun jx/mvn-dependencies()
   "Maven project dependencies"
-  (-map 'jx/abbrev-path
+  (-map 'jx/abbrev-m2-repo-path
         (s-split ":" (jx/get-mvn-classpath (jx/mvn-build-classpath-command)))))
 
 (defun jx/update-config (jdk)

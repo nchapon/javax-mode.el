@@ -5,7 +5,7 @@
 
 (defun jx/src-archive (lib)
   "Archive source name of LIB"
-  (format "%s-sources.jar" (file-name-sans-extension (jx/expand-path lib))))
+  (format "%s-sources.jar" (file-name-sans-extension (jx/expand-m2-repo-path lib))))
 
 (defun jx/extract-archive  (lib)
   "DOCSTRING"
