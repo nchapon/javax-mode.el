@@ -105,20 +105,6 @@ directory that contains :
         (cond ((s-blank? default) (jx/class-package))
               (t default))))))
 
-;; (defun jx/electric-brace ()
-;;   "Insert automatically close brace after 2 new lines."
-;;   (interactive)
-;;   (insert " {")
-;;   (backward-char)
-;;   (fixup-whitespace)
-;;   (move-end-of-line 1)
-;;   (indent-for-tab-command)
-;;   (insert "\n\n")
-;;   (insert "}")
-;;   (indent-for-tab-command)
-;;   (previous-line)
-;;   (indent-for-tab-command))
-
 (defun jx/symbol-at-point ()
   "Read symbol at point"
   (interactive)
