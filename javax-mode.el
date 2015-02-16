@@ -3,6 +3,7 @@
 (require 'compile)
 (require 'javax-project-config)
 (require 'javax-flycheck)
+(require 'javax-src)
 (require 'easymenu)
 
 (defcustom jx/mvn-build-command "mvn -f %spom.xml clean install"
@@ -161,9 +162,13 @@ directory that contains :
   "Find java file from project root for CLASS"
   (let ((package (jx/find-class-package class)))
     (jx/strip-path-suffix
-     (shell-command-to-string
-      (format "find %s -iname %s.java -print0 | grep -FzZ %s"
-              (jx/project-dir) symbol (jx/path-for package))))))
+     (
+      ;; (t (shell-command-to-string
+      ;;     (format "find %s/src/main/java -iname %s.java -print0 | grep -FzZ %s"
+      ;;             (jx/project-dir) class package)))
+      shell-command-to-string
+      (format "find %s%s -iname %s.java -print0 | grep -FzZ %s"
+              (jx/project-dir) jx/src-libs-dir class package)))))
 
 (defun jx/src-handler (symbol)
   "Create a handler to lookup java source code for SYMBOL"
@@ -322,7 +327,9 @@ point, prompts for a var"
         ["Maven test buffer" jx/mvn-test]
         ["Maven build" jx/mvn-build]
         "--"
-        ["Update config" jx/update-config]))
+        ["Update config" jx/update-config]
+        ["Download sources" jx/download-sources]
+        ))
     map)
   "Keymap for Javax mode.")
 
