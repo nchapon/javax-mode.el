@@ -4,6 +4,7 @@
 (require 'javax-project-config)
 (require 'javax-flycheck)
 (require 'javax-src)
+(require 'javax-import)
 (require 'easymenu)
 
 (defcustom jx/mvn-build-command "mvn -f %spom.xml clean install"
